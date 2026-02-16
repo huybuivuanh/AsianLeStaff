@@ -1,8 +1,10 @@
+import SafeAreaViewWrapper from '@/components/layout/SafeAreaViewWrapper';
 import { Text, View, ScrollView } from 'react-native';
 
 export default function HomeScreen() {
   return (
-    <ScrollView className="flex-1 bg-white dark:bg-gray-900">
+    <SafeAreaViewWrapper className="flex-1 bg-white dark:bg-gray-900">
+    <ScrollView className="flex-1">
       <View className="flex-1 items-center justify-center p-8">
         {/* Test 1: Basic Tailwind classes */}
         <View className="bg-blue-500 rounded-lg p-6 mb-4 w-full">
@@ -50,5 +52,6 @@ export default function HomeScreen() {
         </View>
       </View>
     </ScrollView>
+    </SafeAreaViewWrapper>
   );
 }

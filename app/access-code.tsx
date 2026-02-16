@@ -1,4 +1,5 @@
 import ScreenHeader from '@/components/layout/ScreenHeader';
+import SafeAreaViewWrapper from '@/components/layout/SafeAreaViewWrapper';
 import { APP_ACCESS_CODE } from '@/constants/config';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -10,7 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AccessCodeScreen() {
   const router = useRouter();
@@ -33,7 +33,7 @@ export default function AccessCodeScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
+    <SafeAreaViewWrapper className="flex-1 bg-white dark:bg-gray-900">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1">
@@ -82,6 +82,6 @@ export default function AccessCodeScreen() {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </SafeAreaViewWrapper>
   );
 }

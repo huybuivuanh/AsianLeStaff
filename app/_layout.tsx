@@ -1,21 +1,28 @@
-import '@/global.css';
 import { Stack } from 'expo-router';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {
+  SafeAreaProvider,
+  initialWindowMetrics,
+} from 'react-native-safe-area-context';
 import 'react-native-reanimated';
-
+import '@/global.css';
 
 export const unstable_settings = {
   anchor: '(tabs)',
 };
 
 export default function RootLayout() {
-
   return (
-
-      <Stack initialRouteName="access-code">
-        <Stack.Screen name="access-code" options={{ headerShown: false }} />
-        <Stack.Screen name="clock-in" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+        <Stack
+          initialRouteName="access-code"
+          screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="access-code" />
+          <Stack.Screen name="clock-in" />
+          <Stack.Screen name="(tabs)" />
+        </Stack>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

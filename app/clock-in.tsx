@@ -1,4 +1,5 @@
 import ScreenHeader from '@/components/layout/ScreenHeader';
+import SafeAreaViewWrapper from '@/components/layout/SafeAreaViewWrapper';
 import PinModal from '@/components/ui/PinModal';
 import UserList from '@/components/user/UserList';
 import { clockInUser, getUsers } from '@/services/userService';
@@ -6,7 +7,6 @@ import { User } from '@/types';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ClockInScreen() {
   const router = useRouter();
@@ -59,7 +59,7 @@ export default function ClockInScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
+    <SafeAreaViewWrapper className="flex-1 bg-white dark:bg-gray-900">
       <View className="flex-1 px-6 py-8">
         <ScreenHeader
           title="Clock In"
@@ -75,6 +75,6 @@ export default function ClockInScreen() {
           onSuccess={handlePinSuccess}
         />
       </View>
-    </SafeAreaView>
+    </SafeAreaViewWrapper>
   );
 }
