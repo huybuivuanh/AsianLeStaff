@@ -5,14 +5,62 @@
 
 // Mock user data - replace with API call
 const MOCK_USERS: User[] = [
-  { id: 1, name: 'John Doe', pin: '1234', email: 'john@example.com' },
-  { id: 2, name: 'Jane Smith', pin: '5678', email: 'jane@example.com' },
-  { id: 3, name: 'Mike Johnson', pin: '9012', email: 'mike@example.com' },
-  { id: 4, name: 'Sarah Williams', pin: '3456', email: 'sarah@example.com' },
-  { id: 5, name: 'David Brown', pin: '7890', email: 'david@example.com' },
-  { id: 6, name: 'Emily Davis', pin: '2468', email: 'emily@example.com' },
-  { id: 7, name: 'Chris Wilson', pin: '1357', email: 'chris@example.com' },
-  { id: 8, name: 'Lisa Anderson', pin: '9876', email: 'lisa@example.com' },
+  {
+    id: 1,
+    name: "John Doe",
+    pin: "1234",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    pin: "5678",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 3,
+    name: "Mike Johnson",
+    pin: "9012",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 4,
+    name: "Sarah Williams",
+    pin: "3456",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 5,
+    name: "David Brown",
+    pin: "7890",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 6,
+    name: "Emily Davis",
+    pin: "2468",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 7,
+    name: "Chris Wilson",
+    pin: "1357",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 8,
+    name: "Lisa Anderson",
+    pin: "9876",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
 ];
 
 /**
