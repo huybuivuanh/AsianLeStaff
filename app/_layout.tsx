@@ -19,7 +19,7 @@ export default function RootLayout() {
           initialRouteName="access-code"
           screenOptions={{ headerShown: false }}>
           <Stack.Screen name="access-code" />
-          <Stack.Screen name="clock-in" />
+          <Stack.Screen name="user-login" />
           <Stack.Screen name="(tabs)" />
         </Stack>
       </SafeAreaProvider>

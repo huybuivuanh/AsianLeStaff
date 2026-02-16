@@ -43,7 +43,7 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     await clearUserSession();
-    router.replace("/clock-in");
+    router.replace("/user-login");
   };
 
   if (loading) {
@@ -99,15 +99,10 @@ export default function ProfileScreen() {
         <TouchableOpacity
           onPress={handleLogout}
           disabled={!userId}
-          className={`bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 mt-4 ${
-            !userId ? "opacity-50" : ""
-          }`}
+          className="rounded-xl bg-red-600 dark:bg-red-500 py-3.5 px-4"
         >
-          <Text className="text-red-600 dark:text-red-400 font-semibold">
+          <Text className="text-white font-semibold text-center text-base">
             Log out
-          </Text>
-          <Text className="text-red-500 dark:text-red-500/80 text-sm mt-1">
-            Clock out and return to clock-in screen
           </Text>
         </TouchableOpacity>
       </ScrollView>

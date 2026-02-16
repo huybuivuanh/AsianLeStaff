@@ -2,14 +2,13 @@ import ScreenHeader from '@/components/layout/ScreenHeader';
 import SafeAreaViewWrapper from '@/components/layout/SafeAreaViewWrapper';
 import PinModal from '@/components/ui/PinModal';
 import UserList from '@/components/user/UserList';
-import { clockInUser } from '@/services/userService';
 import { isAccessCodeVerified, setUserSession } from '@/services/storageService';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
-export default function ClockInScreen() {
+export default function UserLoginScreen() {
   const router = useRouter();
   const { users, loading, error, startListening, stopListening } = useUserStore();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -41,13 +40,12 @@ export default function ClockInScreen() {
   const handlePinSuccess = async () => {
     if (!selectedUser) return;
     try {
-      await clockInUser(selectedUser.id);
       await setUserSession(selectedUser.id, selectedUser.name);
       setShowPinModal(false);
       setSelectedUser(null);
       router.replace('/(tabs)');
     } catch (err) {
-      console.error('Failed to clock in:', err);
+      console.error('Failed to log in:', err);
     }
   };
 
@@ -62,8 +60,8 @@ export default function ClockInScreen() {
     <SafeAreaViewWrapper className="flex-1 bg-white dark:bg-gray-900">
       <View className="flex-1 px-6 py-8">
         <ScreenHeader
-          title="Clock In"
-          subtitle="Select your name to clock in"
+          title="User Login"
+          subtitle="Select your name to log in"
         />
 
         {error ? (

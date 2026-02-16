@@ -11,6 +11,16 @@ declare global {
     updatedAt: Date;
   }
 
+  /** A single work shift (clock in only) */
+  interface Shift {
+    id: string;
+    userId: string;
+    userName: string;
+    clockInTime: Date;
+    date: string;
+  }
+
+  /** Legacy / alias */
   interface ClockInRecord {
     id: string;
     userId: string;

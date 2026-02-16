@@ -1,5 +1,40 @@
 import { Alert, Platform } from "react-native";
 
+/** Format a Date to time string e.g. "2:30 PM" */
+export function formatTimeOfDay(date: Date): string {
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const am = hours < 12;
+  const h = hours % 12 || 12;
+  const m = minutes < 10 ? `0${minutes}` : String(minutes);
+  return `${h}:${m} ${am ? "AM" : "PM"}`;
+}
+
+/** Today's date as YYYY-MM-DD */
+export function getTodayDateString(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/** Today's date for display e.g. "Monday, February 16, 2025" */
+export function getTodayDateLabel(): string {
+  return new Date().toLocaleDateString(undefined, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+/** Shorter date for compact UI e.g. "Mon, Feb 16, 2025" */
+export function getTodayDateShort(): string {
+  return new Date().toLocaleDateString(undefined, {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
 // Cross-platform alert function
 export const showAlert = (title: string, message?: string) => {
   if (Platform.OS === "web") {

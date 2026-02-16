@@ -27,7 +27,7 @@ export default function AccessCodeScreen() {
   useEffect(() => {
     const run = async () => {
       if (await isAccessCodeVerified()) {
-        router.replace("/clock-in");
+        router.replace("/user-login");
         return;
       }
       const fetched = await getAccessCodeFromFirestore();
@@ -48,7 +48,7 @@ export default function AccessCodeScreen() {
     const correct = expectedCode ?? "";
     if (code.trim().toUpperCase() === correct.toUpperCase()) {
       await setAccessCodeVerified(true);
-      router.replace("/clock-in");
+      router.replace("/user-login");
     } else {
       setError("Invalid access code. Please try again.");
       setCode("");

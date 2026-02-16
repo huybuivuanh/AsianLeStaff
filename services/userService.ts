@@ -18,11 +18,14 @@ export const verifyPin = (user: User, pin: string): boolean => {
 };
 
 /**
- * Clock in user
- * TODO: Call Firestore or Cloud Function to record clock-in
+ * Clock in user: creates a shift in Firestore
  */
-export const clockInUser = async (userId: string): Promise<boolean> => {
-  await new Promise((resolve) => setTimeout(resolve, 300));
+export const clockInUser = async (
+  userId: string,
+  userName: string
+): Promise<boolean> => {
+  const { createShift } = await import('@/services/shiftService');
+  await createShift(userId, userName);
   return true;
 };
 
