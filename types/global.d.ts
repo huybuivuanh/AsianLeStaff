@@ -4,7 +4,7 @@
  */
 declare global {
   interface User {
-    id: number;
+    id: string;
     name: string;
     pin: string;
     createdAt: Date;
@@ -13,7 +13,7 @@ declare global {
 
   interface ClockInRecord {
     id: string;
-    userId: number;
+    userId: string;
     userName: string;
     clockInTime: Date;
     clockOutTime?: Date;

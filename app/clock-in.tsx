@@ -2,18 +2,18 @@ import ScreenHeader from '@/components/layout/ScreenHeader';
 import SafeAreaViewWrapper from '@/components/layout/SafeAreaViewWrapper';
 import PinModal from '@/components/ui/PinModal';
 import UserList from '@/components/user/UserList';
-import { clockInUser, getUsers } from '@/services/userService';
+import { clockInUser } from '@/services/userService';
 import { isAccessCodeVerified } from '@/services/storageService';
+import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 export default function ClockInScreen() {
   const router = useRouter();
-  const [users, setUsers] = useState<User[]>([]);
+  const { users, loading, error, startListening, stopListening } = useUserStore();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showPinModal, setShowPinModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -29,20 +29,9 @@ export default function ClockInScreen() {
 
   useEffect(() => {
     if (!isAuthorized) return;
-    loadUsers();
-  }, [isAuthorized]);
-
-  const loadUsers = async () => {
-    try {
-      setIsLoading(true);
-      const userList = await getUsers();
-      setUsers(userList);
-    } catch (error) {
-      console.error('Failed to load users:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    startListening();
+    return () => stopListening();
+  }, [isAuthorized, startListening, stopListening]);
 
   const handleUserSelect = (user: User) => {
     setSelectedUser(user);
@@ -51,18 +40,13 @@ export default function ClockInScreen() {
 
   const handlePinSuccess = async () => {
     if (!selectedUser) return;
-
     try {
-      // Clock in the user
       await clockInUser(selectedUser.id);
-      
-      // Close modal and navigate to home
       setShowPinModal(false);
       setSelectedUser(null);
       router.replace('/(tabs)');
-    } catch (error) {
-      console.error('Failed to clock in:', error);
-      // Handle error (show toast, etc.)
+    } catch (err) {
+      console.error('Failed to clock in:', err);
     }
   };
 
@@ -81,7 +65,12 @@ export default function ClockInScreen() {
           subtitle="Select your name to clock in"
         />
 
-        {!isLoading && <UserList users={users} onUserSelect={handleUserSelect} />}
+        {error ? (
+          <View className="rounded-lg bg-red-100 dark:bg-red-900/30 p-3 mb-4">
+            <Text className="text-red-700 dark:text-red-300 text-sm">{error}</Text>
+          </View>
+        ) : null}
+        {!loading && <UserList users={users} onUserSelect={handleUserSelect} />}
 
         <PinModal
           visible={showPinModal}
