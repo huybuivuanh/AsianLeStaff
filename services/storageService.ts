@@ -45,11 +45,17 @@ export const clearAccessCodeVerification = async (): Promise<void> => {
 };
 
 /**
- * Store user session data
+ * Store user session data (after clock-in)
  */
-export const setUserSession = async (userId: number): Promise<void> => {
+export const setUserSession = async (
+  userId: string,
+  userName: string
+): Promise<void> => {
   try {
-    await AsyncStorage.setItem(USER_SESSION_KEY, JSON.stringify({ userId, timestamp: Date.now() }));
+    await AsyncStorage.setItem(
+      USER_SESSION_KEY,
+      JSON.stringify({ userId, userName, timestamp: Date.now() })
+    );
   } catch (error) {
     console.error('Failed to save user session:', error);
   }
@@ -58,10 +64,20 @@ export const setUserSession = async (userId: number): Promise<void> => {
 /**
  * Get user session data
  */
-export const getUserSession = async (): Promise<{ userId: number; timestamp: number } | null> => {
+export const getUserSession = async (): Promise<{
+  userId: string;
+  userName: string;
+  timestamp: number;
+} | null> => {
   try {
     const value = await AsyncStorage.getItem(USER_SESSION_KEY);
-    return value ? JSON.parse(value) : null;
+    if (!value) return null;
+    const parsed = JSON.parse(value);
+    return {
+      userId: String(parsed.userId ?? ''),
+      userName: String(parsed.userName ?? ''),
+      timestamp: Number(parsed.timestamp ?? 0),
+    };
   } catch (error) {
     console.error('Failed to read user session:', error);
     return null;

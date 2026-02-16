@@ -3,7 +3,7 @@ import SafeAreaViewWrapper from '@/components/layout/SafeAreaViewWrapper';
 import PinModal from '@/components/ui/PinModal';
 import UserList from '@/components/user/UserList';
 import { clockInUser } from '@/services/userService';
-import { isAccessCodeVerified } from '@/services/storageService';
+import { isAccessCodeVerified, setUserSession } from '@/services/storageService';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -42,6 +42,7 @@ export default function ClockInScreen() {
     if (!selectedUser) return;
     try {
       await clockInUser(selectedUser.id);
+      await setUserSession(selectedUser.id, selectedUser.name);
       setShowPinModal(false);
       setSelectedUser(null);
       router.replace('/(tabs)');
