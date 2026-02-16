@@ -3,7 +3,6 @@ import SafeAreaViewWrapper from '@/components/layout/SafeAreaViewWrapper';
 import PinModal from '@/components/ui/PinModal';
 import UserList from '@/components/user/UserList';
 import { clockInUser, getUsers } from '@/services/userService';
-import { User } from '@/types';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';

@@ -8,8 +8,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { User } from '@/types';
-
 interface PinModalProps {
   visible: boolean;
   user: User | null;

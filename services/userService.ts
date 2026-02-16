@@ -1,5 +1,3 @@
-import { User } from '@/types';
-
 /**
  * User service - handles user data operations
  * Replace with actual API calls when backend is ready

@@ -1,5 +1,4 @@
 import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
-import { User } from '@/types';
 
 interface UserListProps {
   users: User[];
