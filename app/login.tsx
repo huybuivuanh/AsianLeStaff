@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
   KeyboardAvoidingView,
@@ -11,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LoginScreen() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +28,8 @@ export default function LoginScreen() {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      alert('Login functionality to be implemented');
+      // Navigate to clock-in screen after successful login
+      router.replace('/clock-in');
     }, 1000);
   };
 
