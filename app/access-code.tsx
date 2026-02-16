@@ -1,8 +1,9 @@
 import ScreenHeader from '@/components/layout/ScreenHeader';
 import SafeAreaViewWrapper from '@/components/layout/SafeAreaViewWrapper';
 import { APP_ACCESS_CODE } from '@/constants/config';
+import { isAccessCodeVerified, setAccessCodeVerified } from '@/services/storageService';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -16,21 +17,34 @@ export default function AccessCodeScreen() {
   const router = useRouter();
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
+  const [checking, setChecking] = useState(true);
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    const check = async () => {
+      if (await isAccessCodeVerified()) {
+        router.replace('/clock-in');
+      }
+      setChecking(false);
+    };
+    check();
+  }, [router]);
+
+  const handleSubmit = async () => {
     if (!code.trim()) {
       setError('Please enter the access code');
       return;
     }
 
     if (code.trim().toUpperCase() === APP_ACCESS_CODE.toUpperCase()) {
-      // Correct code - navigate to clock-in
+      await setAccessCodeVerified(true);
       router.replace('/clock-in');
     } else {
       setError('Invalid access code. Please try again.');
       setCode('');
     }
   };
+
+  if (checking) return null;
 
   return (
     <SafeAreaViewWrapper className="flex-1 bg-white dark:bg-gray-900">

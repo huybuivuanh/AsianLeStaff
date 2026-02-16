@@ -7,9 +7,8 @@ declare global {
     id: number;
     name: string;
     pin: string;
-    email?: string;
-    role?: string;
-    department?: string;
+    createdAt: Date;
+    updatedAt: Date;
   }
 
   interface ClockInRecord {
