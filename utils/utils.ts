@@ -35,6 +35,18 @@ export function getTodayDateShort(): string {
   });
 }
 
+/** Format YYYY-MM-DD to display label e.g. "Monday, February 16, 2025" */
+export function formatDateStringToLabel(dateStr: string): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const date = new Date(y, (m ?? 1) - 1, d ?? 1);
+  return date.toLocaleDateString(undefined, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 // Cross-platform alert function
 export const showAlert = (title: string, message?: string) => {
   if (Platform.OS === "web") {

@@ -65,3 +65,31 @@ export async function getTodayLatestShift(userId: string): Promise<Shift | null>
   const shifts = await getTodayShifts(userId);
   return shifts[0] ?? null;
 }
+
+/**
+ * Get all shifts for a user on a specific date (for schedule view).
+ * dateStr format: YYYY-MM-DD
+ */
+export async function getShiftsForDate(
+  userId: string,
+  dateStr: string,
+): Promise<Shift[]> {
+  const q = query(
+    collection(db, SHIFTS_COLLECTION),
+    where('userId', '==', userId),
+  );
+  const snap = await getDocs(q);
+  const shifts = snap.docs.map((d) => {
+    const data = d.data();
+    return {
+      id: d.id,
+      userId: String(data.userId ?? ''),
+      userName: String(data.userName ?? ''),
+      clockInTime: toDate(data.clockInTime),
+      date: String(data.date ?? dateStr),
+    };
+  });
+  return shifts
+    .filter((s) => s.date === dateStr)
+    .sort((a, b) => b.clockInTime.getTime() - a.clockInTime.getTime());
+}
