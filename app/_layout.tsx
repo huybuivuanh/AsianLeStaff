@@ -11,8 +11,8 @@ export default function RootLayout() {
 
   return (
 
-      <Stack initialRouteName="login">
-        <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack initialRouteName="access-code">
+        <Stack.Screen name="access-code" options={{ headerShown: false }} />
         <Stack.Screen name="clock-in" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>

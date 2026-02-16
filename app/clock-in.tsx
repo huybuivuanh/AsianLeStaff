@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import ScreenHeader from '@/components/layout/ScreenHeader';
+import PinModal from '@/components/ui/PinModal';
+import UserList from '@/components/user/UserList';
+import { clockInUser, getUsers } from '@/services/userService';
+import { User } from '@/types';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { User } from '@/types';
-import { getUsers, clockInUser } from '@/services/userService';
-import ScreenHeader from '@/components/layout/ScreenHeader';
-import UserList from '@/components/user/UserList';
-import PinModal from '@/components/ui/PinModal';
 
 export default function ClockInScreen() {
   const router = useRouter();
