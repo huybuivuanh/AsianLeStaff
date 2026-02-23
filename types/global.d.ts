@@ -1,39 +1,38 @@
-/**
- * Global type definitions — use these types without importing.
- * Add new shared types here.
- */
 declare global {
   interface User {
     id: string;
     name: string;
     pin: string;
+    server: boolean;
     createdAt: Date;
-    updatedAt: Date;
+    updatedAt?: Date;
   }
 
-  /** A single work shift (clock in only) */
+  interface TimeRange {
+    start: Date;
+    end: Date;
+  }
+
+  interface Tips {
+    id: string;
+    date: string;
+    morningCash: number | 0;
+    morningCard: number | 0;
+    afternoonCash: number | 0;
+    afternoonCard: number | 0;
+    total: number | 0;
+  }
+
   interface Shift {
     id: string;
     userId: string;
     userName: string;
-    clockInTime: Date;
+    shift: TimeRange;
+    break: TimeRange | null;
+    tips: number | 0;
     date: string;
-  }
-
-  /** Legacy / alias */
-  interface ClockInRecord {
-    id: string;
-    userId: string;
-    userName: string;
-    clockInTime: Date;
-    clockOutTime?: Date;
-    status: "clocked-in" | "clocked-out";
-  }
-
-  interface AuthState {
-    isAuthenticated: boolean;
-    user: User | null;
-    token: string | null;
+    clockInTime?: Date | null;
+    actualHours?: number;
   }
 }
 
