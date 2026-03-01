@@ -1,3 +1,4 @@
+import InactivityGuard from '@/components/InactivityGuard';
 import { useShiftStore } from '@/stores/shiftStore';
 import { getUserSession, isAccessCodeVerified } from '@/services/storageService';
 import { Tabs, useRouter } from 'expo-router';
@@ -33,28 +34,30 @@ export default function TabLayout() {
   if (isAuthorized !== true) return null;
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-        }}
-      />
-      <Tabs.Screen
-        name="schedule"
-        options={{
-          title: 'Schedule',
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-        }}
-      />
-    </Tabs>
+    <InactivityGuard>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Home',
+          }}
+        />
+        <Tabs.Screen
+          name="schedule"
+          options={{
+            title: 'Schedule',
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: 'Profile',
+          }}
+        />
+      </Tabs>
+    </InactivityGuard>
   );
 }
