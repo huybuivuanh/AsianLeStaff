@@ -1,18 +1,22 @@
-import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import type { Unsubscribe } from 'firebase/firestore';
-import { create } from 'zustand';
+import { db } from "@/lib/firebase";
+import type { Unsubscribe } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
+import { create } from "zustand";
 
-const USERS_COLLECTION = 'users';
+const USERS_COLLECTION = "users";
 
-function mapDocToUser(doc: import('firebase/firestore').QueryDocumentSnapshot): User {
+function mapDocToUser(
+  doc: import("firebase/firestore").QueryDocumentSnapshot,
+): User {
   const data = doc.data();
   const createdAt = data?.createdAt?.toDate?.() ?? new Date();
   const updatedAt = data?.updatedAt?.toDate?.() ?? new Date();
+  const server = data?.server;
   return {
     id: doc.id,
-    name: typeof data?.name === 'string' ? data.name : '',
-    pin: typeof data?.pin === 'string' ? data.pin : '',
+    name: typeof data?.name === "string" ? data.name : "",
+    pin: typeof data?.pin === "string" ? data.pin : "",
+    server,
     createdAt,
     updatedAt,
   };
@@ -45,12 +49,12 @@ export const useUserStore = create<UserState>((set) => ({
         set({ users, loading: false, error: null });
       },
       (err) => {
-        console.error('Users snapshot error:', err);
+        console.error("Users snapshot error:", err);
         set({
           loading: false,
-          error: err?.message ?? 'Failed to load users',
+          error: err?.message ?? "Failed to load users",
         });
-      }
+      },
     );
     set({ unsubscribe });
   },

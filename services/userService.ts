@@ -1,5 +1,9 @@
 import { doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import {
+  createShift,
+  updateShiftClockInTime,
+} from '@/services/shiftService';
 
 const USERS_COLLECTION = 'users';
 
@@ -18,14 +22,20 @@ export const verifyPin = (user: User, pin: string): boolean => {
 };
 
 /**
- * Clock in user: creates a shift in Firestore
+ * Clock in user:
+ * - No shift today → create a new shift with noShift: true (ad-hoc clock-in).
+ * - Has shift today (not clocked in or re-clock in) → update that shift's clockInTime to now.
  */
 export const clockInUser = async (
   userId: string,
-  userName: string
+  userName: string,
+  existingShiftId?: string
 ): Promise<boolean> => {
-  const { createShift } = await import('@/services/shiftService');
-  await createShift(userId, userName);
+  if (existingShiftId) {
+    await updateShiftClockInTime(existingShiftId);
+  } else {
+    await createShift(userId, userName, { noShift: true });
+  }
   return true;
 };
 

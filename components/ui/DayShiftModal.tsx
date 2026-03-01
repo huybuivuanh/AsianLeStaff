@@ -67,10 +67,12 @@ export default function DayShiftModal({
                   className="flex-row items-center justify-between rounded-xl bg-gray-100 dark:bg-gray-800 py-3 px-4"
                 >
                   <Text className="text-base font-medium text-gray-900 dark:text-white">
-                    Clocked in
+                    {shift.clockInTime ? "Clocked in" : "Not clocked in"}
                   </Text>
                   <Text className="text-base font-semibold text-gray-700 dark:text-gray-200 tabular-nums">
-                    {formatTimeOfDay(shift.clockInTime)}
+                    {shift.clockInTime
+                      ? formatTimeOfDay(shift.clockInTime)
+                      : "—"}
                   </Text>
                 </View>
               ))}

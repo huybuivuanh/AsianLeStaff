@@ -61,7 +61,7 @@ export default function HomeScreen() {
       return;
     }
     try {
-      await clockInUser(userId, userName);
+      await clockInUser(userId, userName, todayShift?.id);
       const time = formatTimeOfDay(new Date());
       showAlert("Clocked in", `Clocked in at ${time}`);
       await load();
@@ -76,7 +76,7 @@ export default function HomeScreen() {
       return;
     }
     try {
-      await clockInUser(userId, userName);
+      await clockInUser(userId, userName, todayShift?.id);
       const time = formatTimeOfDay(new Date());
       showAlert("Clocked in", `Clocked in at ${time}`);
       await load();
@@ -129,6 +129,13 @@ export default function HomeScreen() {
                 {formatTimeOfDay(now)}
               </Text>
             </View>
+            {userName ? (
+              <View className="rounded-lg bg-gray-100 dark:bg-gray-800 px-3 py-1.5">
+                <Text className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                  {userName}
+                </Text>
+              </View>
+            ) : null}
           </View>
         </View>
 
@@ -136,14 +143,36 @@ export default function HomeScreen() {
           <Text className="text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider mb-2">
             Today&apos;s shift
           </Text>
-          {todayShift ? (
+          {!todayShift ? (
+            <>
+              <Text className="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                No shift today.
+              </Text>
+              <TouchableOpacity
+                onPress={handleClockIn}
+                className="bg-blue-600 dark:bg-blue-500 rounded-xl py-4 px-4 active:opacity-90"
+              >
+                <Text className="text-white font-semibold text-center text-base">
+                  Clock in
+                </Text>
+              </TouchableOpacity>
+            </>
+          ) : todayShift.clockInTime ? (
             <>
               <View className="flex-row items-center justify-between flex-wrap gap-2">
                 <View>
-                  <Text className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Clocked in at {formatTimeOfDay(todayShift.clockInTime)}
-                  </Text>
+                  {todayShift.noShift ? (
+                    <Text className="text-lg font-semibold text-gray-900 dark:text-white">
+                      No shift scheduled
+                    </Text>
+                  ) : (
+                    <Text className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Shift {formatTimeOfDay(todayShift.shift.start)} –{" "}
+                      {formatTimeOfDay(todayShift.shift.end)}
+                    </Text>
+                  )}
                   <Text className="text-gray-500 dark:text-gray-400 text-sm mt-0.5">
+                    Clocked in at {formatTimeOfDay(todayShift.clockInTime)} ·{" "}
                     {userName}
                   </Text>
                 </View>
@@ -159,8 +188,12 @@ export default function HomeScreen() {
             </>
           ) : (
             <>
-              <Text className="text-gray-500 dark:text-gray-400 text-sm mb-4">
-                You haven&apos;t clocked in today.
+              <Text className="text-lg font-semibold text-gray-900 dark:text-white">
+                Shift {formatTimeOfDay(todayShift.shift.start)} –{" "}
+                {formatTimeOfDay(todayShift.shift.end)}
+              </Text>
+              <Text className="text-gray-500 dark:text-gray-400 text-sm mt-1 mb-4">
+                Not clocked in.
               </Text>
               <TouchableOpacity
                 onPress={handleClockIn}

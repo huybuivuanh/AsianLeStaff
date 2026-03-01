@@ -10,9 +10,21 @@ export function formatTimeOfDay(date: Date): string {
   return `${h}:${m} ${am ? "AM" : "PM"}`;
 }
 
-/** Today's date as YYYY-MM-DD */
-export function getTodayDateString(): string {
-  return new Date().toISOString().slice(0, 10);
+/** Today's date as YYYY-MM-DD in local timezone (use for shift "today" logic) */
+export function getTodayDateStringLocal(): string {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/** Format a Date to YYYY-MM-DD in local timezone (for deriving shift date from timestamps) */
+export function formatDateToLocalDateString(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
 /** Today's date for display e.g. "Monday, February 16, 2025" */
