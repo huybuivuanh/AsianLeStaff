@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Text,
   View,
@@ -18,14 +18,19 @@ interface PinModalProps {
 export default function PinModal({ visible, user, onClose, onSuccess }: PinModalProps) {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
+  const inputRef = useRef<TextInput>(null);
 
-  // Reset state when modal opens/closes
+  // Reset state when modal opens
   useEffect(() => {
     if (visible) {
       setPin('');
       setError('');
     }
   }, [visible]);
+
+  const focusInput = () => {
+    setTimeout(() => inputRef.current?.focus(), 400);
+  };
 
   const handlePinChange = (text: string) => {
     setPin(text.replace(/[^0-9]/g, ''));
@@ -54,6 +59,7 @@ export default function PinModal({ visible, user, onClose, onSuccess }: PinModal
       visible={visible}
       transparent
       animationType="fade"
+      onShow={focusInput}
       onRequestClose={onClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -73,6 +79,7 @@ export default function PinModal({ visible, user, onClose, onSuccess }: PinModal
             {/* PIN Input */}
             <View className="mb-4">
               <TextInput
+                ref={inputRef}
                 className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-4 text-gray-900 dark:text-white text-2xl font-bold text-center tracking-widest"
                 placeholder="Enter PIN"
                 placeholderTextColor="#9CA3AF"
@@ -81,6 +88,9 @@ export default function PinModal({ visible, user, onClose, onSuccess }: PinModal
                 secureTextEntry
                 keyboardType="number-pad"
                 maxLength={4}
+                returnKeyType="done"
+                blurOnSubmit={false}
+                onSubmitEditing={handleSubmit}
                 autoFocus
               />
               {error ? (

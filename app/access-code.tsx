@@ -89,6 +89,9 @@ export default function AccessCodeScreen() {
               autoCapitalize="characters"
               autoCorrect={false}
               autoFocus
+              returnKeyType="go"
+              blurOnSubmit={false}
+              onSubmitEditing={handleSubmit}
             />
             {error ? (
               <Text className="text-red-600 dark:text-red-400 text-sm mt-2 text-center">
