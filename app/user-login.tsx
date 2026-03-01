@@ -8,6 +8,7 @@ import {
   isAccessCodeVerified,
   setUserSession,
 } from '@/services/storageService';
+import { useShiftStore } from '@/stores/shiftStore';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -62,6 +63,7 @@ export default function UserLoginScreen() {
   const handleLogout = async () => {
     await clearAccessCodeVerification();
     await clearUserSession();
+    useShiftStore.getState().clearShifts();
     router.replace('/access-code');
   };
 

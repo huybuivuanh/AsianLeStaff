@@ -1,6 +1,7 @@
 import SafeAreaViewWrapper from "@/components/layout/SafeAreaViewWrapper";
 import ChangePinModal from "@/components/ui/ChangePinModal";
 import { clearUserSession, getUserSession } from "@/services/storageService";
+import { useShiftStore } from "@/stores/shiftStore";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -43,6 +44,7 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     await clearUserSession();
+    useShiftStore.getState().clearShifts();
     router.replace("/user-login");
   };
 

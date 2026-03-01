@@ -10,6 +10,13 @@ export function formatTimeOfDay(date: Date): string {
   return `${h}:${m} ${am ? "AM" : "PM"}`;
 }
 
+/** Short time for compact UI, 24h e.g. "09:00", "14:30" (no am/pm) */
+export function formatTimeShort(date: Date): string {
+  const h = String(date.getHours()).padStart(2, "0");
+  const m = String(date.getMinutes()).padStart(2, "0");
+  return `${h}:${m}`;
+}
+
 /** Today's date as YYYY-MM-DD in local timezone (use for shift "today" logic) */
 export function getTodayDateStringLocal(): string {
   const d = new Date();

@@ -1,4 +1,8 @@
-import { formatDateStringToLabel, formatTimeOfDay } from "@/utils/utils";
+import {
+  formatDateStringToLabel,
+  formatTimeShort,
+  getTodayDateStringLocal,
+} from "@/utils/utils";
 import {
   ActivityIndicator,
   Modal,
@@ -41,45 +45,65 @@ export default function DayShiftModal({
         style={({ pressed }) => (pressed ? { opacity: 0.98 } : undefined)}
       >
         <Pressable
-          className="bg-white dark:bg-gray-900 rounded-t-2xl pt-4 pb-8 px-5"
+          className="bg-white dark:bg-gray-900 rounded-t-2xl pt-3 pb-5 px-4"
           onPress={(e) => e.stopPropagation()}
         >
-          <View className="w-10 h-1 rounded-full bg-gray-300 dark:bg-gray-600 self-center mb-4" />
-          <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+          <View className="w-8 h-0.5 rounded-full bg-gray-300 dark:bg-gray-600 self-center mb-3" />
+          <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-0.5">
             {dateLabel}
           </Text>
-          <Text className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          <Text className="text-sm text-gray-500 dark:text-gray-400 mb-3">
             Your shift{shifts && shifts.length !== 1 ? "s" : ""}
           </Text>
 
           {loading ? (
-            <View className="py-8 items-center">
+            <View className="py-5 items-center">
               <ActivityIndicator size="small" />
-              <Text className="text-gray-500 dark:text-gray-400 mt-2 text-sm">
+              <Text className="text-gray-500 dark:text-gray-400 mt-1.5 text-sm">
                 Loading...
               </Text>
             </View>
           ) : shifts && shifts.length > 0 ? (
             <View className="gap-2">
-              {shifts.map((shift) => (
-                <View
-                  key={shift.id}
-                  className="flex-row items-center justify-between rounded-xl bg-gray-100 dark:bg-gray-800 py-3 px-4"
-                >
-                  <Text className="text-base font-medium text-gray-900 dark:text-white">
-                    {shift.clockInTime ? "Clocked in" : "Not clocked in"}
-                  </Text>
-                  <Text className="text-base font-semibold text-gray-700 dark:text-gray-200 tabular-nums">
-                    {shift.clockInTime
-                      ? formatTimeOfDay(shift.clockInTime)
-                      : "—"}
-                  </Text>
-                </View>
-              ))}
+              {shifts.map((shift) => {
+                const shiftTime = shift.noShift
+                  ? "No shift"
+                  : `${formatTimeShort(shift.shift.start)}–${formatTimeShort(shift.shift.end)}`;
+                const breakText = shift.break
+                  ? `${formatTimeShort(shift.break.start)}–${formatTimeShort(shift.break.end)}`
+                  : "No Break";
+                const clockInText = shift.clockInTime
+                  ? formatTimeShort(shift.clockInTime)
+                  : "";
+                const isPast = dateString < getTodayDateStringLocal();
+                const notClockedIn = !shift.clockInTime && isPast;
+                return (
+                  <View
+                    key={shift.id}
+                    className="rounded-lg bg-gray-100 dark:bg-gray-800 p-3"
+                  >
+                    <Text className="text-sm font-medium text-gray-900 dark:text-white tabular-nums">
+                      {shiftTime}
+                    </Text>
+                    <Text className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                      {breakText}
+                    </Text>
+                    {shift.clockInTime ? (
+                      <Text className="text-sm font-medium mt-0.5 text-gray-700 dark:text-gray-200 tabular-nums">
+                        In: {clockInText}
+                      </Text>
+                    ) : notClockedIn ? (
+                      <Text className="text-sm font-medium mt-0.5 text-red-600 dark:text-red-400">
+                        Not In
+                      </Text>
+                    ) : null}
+                  </View>
+                );
+              })}
             </View>
           ) : (
-            <View className="py-6 rounded-xl bg-gray-100 dark:bg-gray-800 px-4">
-              <Text className="text-center text-gray-500 dark:text-gray-400">
+            <View className="py-4 rounded-lg bg-gray-100 dark:bg-gray-800 px-3">
+              <Text className="text-center text-base text-gray-500 dark:text-gray-400">
                 {emptyMessage ?? "No shifts recorded for this day."}
               </Text>
             </View>
@@ -87,10 +111,10 @@ export default function DayShiftModal({
 
           <TouchableOpacity
             onPress={onClose}
-            className="mt-6 bg-gray-200 dark:bg-gray-700 rounded-xl py-3.5"
+            className="mt-4 bg-gray-200 dark:bg-gray-700 rounded-lg py-2.5"
             activeOpacity={0.8}
           >
-            <Text className="text-center font-semibold text-gray-800 dark:text-gray-200">
+            <Text className="text-center text-base font-semibold text-gray-800 dark:text-gray-200">
               Close
             </Text>
           </TouchableOpacity>

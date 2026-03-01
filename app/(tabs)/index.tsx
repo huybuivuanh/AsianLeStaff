@@ -1,10 +1,15 @@
 import SafeAreaViewWrapper from "@/components/layout/SafeAreaViewWrapper";
-import { getTodayLatestShift } from "@/services/shiftService";
 import { clearUserSession, getUserSession } from "@/services/storageService";
 import { clockInUser } from "@/services/userService";
-import { formatTimeOfDay, getTodayDateShort, showAlert } from "@/utils/utils";
+import { useShiftStore } from "@/stores/shiftStore";
+import {
+  formatTimeOfDay,
+  getTodayDateShort,
+  getTodayDateStringLocal,
+  showAlert,
+} from "@/utils/utils";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   RefreshControl,
@@ -18,30 +23,42 @@ export default function HomeScreen() {
   const router = useRouter();
   const [userId, setUserId] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
-  const [todayShift, setTodayShift] = useState<Shift | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [now, setNow] = useState(() => new Date());
 
-  const load = useCallback(async () => {
-    const session = await getUserSession();
-    if (!session) {
-      setUserId("");
-      setUserName("");
-      setTodayShift(null);
-      setLoading(false);
-      return;
-    }
-    setUserId(session.userId);
-    setUserName(session.userName);
-    const latest = await getTodayLatestShift(session.userId);
-    setTodayShift(latest);
-    setLoading(false);
-  }, []);
+  const shifts = useShiftStore((s) => s.shifts);
+  const loadShifts = useShiftStore((s) => s.loadShifts);
+
+  const todayShift = useMemo(() => {
+    const today = getTodayDateStringLocal();
+    const dayShifts = shifts
+      .filter((s) => s.date === today)
+      .sort(
+        (a, b) =>
+          (b.clockInTime?.getTime() ?? b.shift.start.getTime()) -
+          (a.clockInTime?.getTime() ?? a.shift.start.getTime()),
+      );
+    return dayShifts[0] ?? null;
+  }, [shifts]);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let cancelled = false;
+    getUserSession().then((session) => {
+      if (cancelled) return;
+      if (!session) {
+        setUserId("");
+        setUserName("");
+      } else {
+        setUserId(session.userId);
+        setUserName(session.userName);
+      }
+      setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const tick = () => setNow(new Date());
@@ -50,10 +67,11 @@ export default function HomeScreen() {
   }, []);
 
   const onRefresh = useCallback(async () => {
+    if (!userId) return;
     setRefreshing(true);
-    await load();
+    await loadShifts(userId);
     setRefreshing(false);
-  }, [load]);
+  }, [userId, loadShifts]);
 
   const handleClockIn = async () => {
     if (!userId || !userName) {
@@ -64,7 +82,7 @@ export default function HomeScreen() {
       await clockInUser(userId, userName, todayShift?.id);
       const time = formatTimeOfDay(new Date());
       showAlert("Clocked in", `Clocked in at ${time}`);
-      await load();
+      await loadShifts(userId);
     } catch (err) {
       console.error("Failed to clock in:", err);
     }
@@ -79,7 +97,7 @@ export default function HomeScreen() {
       await clockInUser(userId, userName, todayShift?.id);
       const time = formatTimeOfDay(new Date());
       showAlert("Clocked in", `Clocked in at ${time}`);
-      await load();
+      await loadShifts(userId);
     } catch (err) {
       console.error("Failed to clock in:", err);
     }
@@ -87,6 +105,7 @@ export default function HomeScreen() {
 
   const handleLogout = async () => {
     await clearUserSession();
+    useShiftStore.getState().clearShifts();
     router.replace("/user-login");
   };
 

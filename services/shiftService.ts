@@ -110,6 +110,47 @@ export async function getShiftsForDate(
     );
 }
 
+/**
+ * Get all shifts for a user (no date filter). Used for loading into the app store once.
+ */
+export async function getAllShiftsForUser(userId: string): Promise<Shift[]> {
+  const q = query(
+    collection(db, SHIFTS_COLLECTION),
+    where('userId', '==', userId),
+  );
+  const snap = await getDocs(q);
+  const shifts = snap.docs.map((d) => mapDocToShift(d));
+  return shifts.sort(
+    (a, b) =>
+      (b.clockInTime?.getTime() ?? b.shift.start.getTime()) -
+      (a.clockInTime?.getTime() ?? a.shift.start.getTime()),
+  );
+}
+
+/**
+ * Get all shifts for a user in a date range (for schedule month grid).
+ * startDateStr, endDateStr format: YYYY-MM-DD (inclusive).
+ */
+export async function getShiftsInRange(
+  userId: string,
+  startDateStr: string,
+  endDateStr: string,
+): Promise<Shift[]> {
+  const q = query(
+    collection(db, SHIFTS_COLLECTION),
+    where('userId', '==', userId),
+  );
+  const snap = await getDocs(q);
+  const shifts = snap.docs.map((d) => mapDocToShift(d));
+  return shifts
+    .filter((s) => s.date >= startDateStr && s.date <= endDateStr)
+    .sort(
+      (a, b) =>
+        (b.clockInTime?.getTime() ?? b.shift.start.getTime()) -
+        (a.clockInTime?.getTime() ?? a.shift.start.getTime())
+    );
+}
+
 function mapDocToShift(d: QueryDocumentSnapshot): Shift {
   const data = d.data() as Record<string, unknown>;
   const shiftMap = data.shift as { start?: unknown; end?: unknown } | undefined;
