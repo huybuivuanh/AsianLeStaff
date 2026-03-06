@@ -1,3 +1,8 @@
+import { db } from "@/lib/firebase";
+import {
+  formatDateToLocalDateString,
+  getTodayDateStringLocal,
+} from "@/utils/utils";
 import {
   addDoc,
   collection,
@@ -9,18 +14,13 @@ import {
   updateDoc,
   where,
   type QueryDocumentSnapshot,
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import {
-  formatDateToLocalDateString,
-  getTodayDateStringLocal,
-} from '@/utils/utils';
+} from "firebase/firestore";
 
-const SHIFTS_COLLECTION = 'shifts';
+const SHIFTS_COLLECTION = "shifts";
 
 function toDate(val: unknown): Date {
   if (val instanceof Date) return val;
-  if (val && typeof (val as Timestamp).toDate === 'function') {
+  if (val && typeof (val as Timestamp).toDate === "function") {
     return (val as Timestamp).toDate();
   }
   return new Date();
@@ -33,7 +33,7 @@ function toDate(val: unknown): Date {
 export async function createShift(
   userId: string,
   userName: string,
-  options?: { noShift?: boolean }
+  options?: { noShift?: boolean },
 ): Promise<string> {
   const date = getTodayDateStringLocal();
   const now = serverTimestamp();
@@ -66,7 +66,7 @@ export async function getTodayShifts(userId: string): Promise<Shift[]> {
   const today = getTodayDateStringLocal();
   const q = query(
     collection(db, SHIFTS_COLLECTION),
-    where('userId', '==', userId)
+    where("userId", "==", userId),
   );
   const snap = await getDocs(q);
   const shifts = snap.docs.map((d) => mapDocToShift(d));
@@ -75,14 +75,16 @@ export async function getTodayShifts(userId: string): Promise<Shift[]> {
     .sort(
       (a, b) =>
         (b.clockInTime?.getTime() ?? b.shift.start.getTime()) -
-        (a.clockInTime?.getTime() ?? a.shift.start.getTime())
+        (a.clockInTime?.getTime() ?? a.shift.start.getTime()),
     );
 }
 
 /**
  * Get today's most recent shift (for "clocked in at" display)
  */
-export async function getTodayLatestShift(userId: string): Promise<Shift | null> {
+export async function getTodayLatestShift(
+  userId: string,
+): Promise<Shift | null> {
   const shifts = await getTodayShifts(userId);
   return shifts[0] ?? null;
 }
@@ -97,7 +99,7 @@ export async function getShiftsForDate(
 ): Promise<Shift[]> {
   const q = query(
     collection(db, SHIFTS_COLLECTION),
-    where('userId', '==', userId),
+    where("userId", "==", userId),
   );
   const snap = await getDocs(q);
   const shifts = snap.docs.map((d) => mapDocToShift(d));
@@ -106,7 +108,7 @@ export async function getShiftsForDate(
     .sort(
       (a, b) =>
         (b.clockInTime?.getTime() ?? b.shift.start.getTime()) -
-        (a.clockInTime?.getTime() ?? a.shift.start.getTime())
+        (a.clockInTime?.getTime() ?? a.shift.start.getTime()),
     );
 }
 
@@ -116,7 +118,7 @@ export async function getShiftsForDate(
 export async function getAllShiftsForUser(userId: string): Promise<Shift[]> {
   const q = query(
     collection(db, SHIFTS_COLLECTION),
-    where('userId', '==', userId),
+    where("userId", "==", userId),
   );
   const snap = await getDocs(q);
   const shifts = snap.docs.map((d) => mapDocToShift(d));
@@ -138,7 +140,7 @@ export async function getShiftsInRange(
 ): Promise<Shift[]> {
   const q = query(
     collection(db, SHIFTS_COLLECTION),
-    where('userId', '==', userId),
+    where("userId", "==", userId),
   );
   const snap = await getDocs(q);
   const shifts = snap.docs.map((d) => mapDocToShift(d));
@@ -147,7 +149,7 @@ export async function getShiftsInRange(
     .sort(
       (a, b) =>
         (b.clockInTime?.getTime() ?? b.shift.start.getTime()) -
-        (a.clockInTime?.getTime() ?? a.shift.start.getTime())
+        (a.clockInTime?.getTime() ?? a.shift.start.getTime()),
     );
 }
 
@@ -159,19 +161,18 @@ function mapDocToShift(d: QueryDocumentSnapshot): Shift {
   const clockInTime =
     data.clockInTime != null ? toDate(data.clockInTime) : null;
   const dateStored =
-    data.date != null && String(data.date).trim() !== ''
+    data.date != null && String(data.date).trim() !== ""
       ? String(data.date)
       : formatDateToLocalDateString(start);
 
   return {
     id: d.id,
-    userId: String(data.userId ?? ''),
-    userName: String(data.userName ?? ''),
+    userId: String(data.userId ?? ""),
+    userName: String(data.userName ?? ""),
     date: dateStored,
     clockInTime,
     shift: { start, end },
     break: null,
-    tips: 0,
     noShift: Boolean(data.noShift),
   };
 }
