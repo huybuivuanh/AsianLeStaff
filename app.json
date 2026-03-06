@@ -12,7 +12,8 @@
     },
     "android": {
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.buivuanhhuy.AsianLeStaff"
     },
     "web": {
       "bundler": "metro"
@@ -23,6 +24,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "196e6d9a-3ab3-451c-9df9-1c742f2c3f22"
+      }
     }
   }
 }
