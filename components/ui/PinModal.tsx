@@ -28,24 +28,30 @@ export default function PinModal({ visible, user, onClose, onSuccess }: PinModal
     }
   }, [visible]);
 
+  // Auto-submit when 4 digits are entered
+  useEffect(() => {
+    if (visible && user && pin.length === 4) {
+      if (user.pin === pin) {
+        onSuccess();
+      } else {
+        setError('Incorrect PIN. Please try again.');
+        setPin('');
+      }
+    }
+  }, [pin, visible, user]);
+
   const focusInput = () => {
     setTimeout(() => inputRef.current?.focus(), 400);
   };
 
   const handlePinChange = (text: string) => {
-    setPin(text.replace(/[^0-9]/g, ''));
+    const digits = text.replace(/[^0-9]/g, '');
+    setPin(digits.slice(0, 4));
     setError('');
   };
 
   const handleSubmit = () => {
-    if (!user) return;
-
-    if (pin.length !== 4) {
-      setError('PIN must be 4 digits');
-      return;
-    }
-
-    // Verify PIN
+    if (!user || pin.length !== 4) return;
     if (user.pin === pin) {
       onSuccess();
     } else {
