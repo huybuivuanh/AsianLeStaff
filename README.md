@@ -1,50 +1,101 @@
-# Welcome to your Expo app 👋
+# AsianLeStaff
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native mobile app for staff clock-in and shift management, built with Expo.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Access code gate** — one-time code required on first launch, verified against Firestore
+- **User login** — select your name from a list, authenticate with a 4-digit PIN
+- **Clock in** — record your clock-in time for today's shift; re-clock-in if needed
+- **Schedule** — monthly calendar view showing scheduled shifts, break times, and clock-in status; highlights late clock-ins and missed shifts
+- **Profile** — view your name and change your PIN
+- **Auto logout** — session clears after inactivity
+- **Dark mode** — follows system appearance
 
-   ```bash
-   npm install
-   ```
+## Tech Stack
 
-2. Start the app
+| Layer | Library |
+|---|---|
+| Framework | Expo (SDK 54) + Expo Router |
+| UI | React Native + NativeWind (Tailwind CSS) |
+| State | Zustand |
+| Backend | Firebase (Firestore) |
+| Language | TypeScript |
 
-   ```bash
-   npx expo start
-   ```
+## Project Structure
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+app/
+  access-code.tsx     # One-time access code screen
+  user-login.tsx      # User selection + PIN login
+  (tabs)/
+    index.tsx         # Home — today's shift + clock-in
+    schedule.tsx      # Monthly calendar view
+    profile.tsx       # Profile + change PIN
+components/
+  layout/             # SafeAreaViewWrapper, ScreenHeader
+  ui/                 # PinModal, ChangePinModal, DayShiftModal
+  user/               # UserList
+services/
+  accessCodeService.ts
+  shiftService.ts
+  storageService.ts   # AsyncStorage session helpers
+  userService.ts
+stores/
+  shiftStore.ts       # Zustand shift state
+  userStore.ts        # Zustand user list state
+lib/
+  firebase.ts         # Firebase initialisation
+utils/
+  utils.ts
+  validation.ts
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Getting Started
 
-## Learn more
+### Prerequisites
 
-To learn more about developing your project with Expo, look at the following resources:
+- Node.js 18+
+- Expo CLI (`npm install -g expo`)
+- iOS Simulator / Android Emulator, or physical device with Expo Go
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Install
 
-## Join the community
+```bash
+npm install
+```
 
-Join our community of developers creating universal apps.
+### Run
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+# Start dev server
+npm start
+
+# iOS
+npm run ios
+
+# Android
+npm run android
+```
+
+### Firebase Setup
+
+1. Create a Firebase project and enable Firestore.
+2. Add your Firebase config to `lib/firebase.ts`.
+3. Set the access code document in Firestore (the app reads it via `accessCodeService`).
+
+### Build (EAS)
+
+```bash
+eas build --platform android
+eas build --platform ios
+```
+
+## Authentication Flow
+
+```
+App launch
+  └─ Access code verified?
+       ├─ No  → Access Code screen → verify against Firestore → store locally
+       └─ Yes → User Login screen → select name → enter PIN → Home tabs
+```
