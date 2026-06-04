@@ -5,15 +5,14 @@ import { getAuth, initializeAuth, type Auth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { Platform } from "react-native";
 
-// Firebase client config (public keys are safe to expose; use env vars if you prefer)
 const firebaseConfig = {
-  apiKey: "AIzaSyAjcnTLmIcnPAFwpyTcRpK7sdmsLp4ycyc",
-  authDomain: "asianlestaff.firebaseapp.com",
-  projectId: "asianlestaff",
-  storageBucket: "asianlestaff.firebasestorage.app",
-  messagingSenderId: "510736376525",
-  appId: "1:510736376525:web:628dce17d5cc4afe8a3f84",
-  measurementId: "G-7478CR3VZF",
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
